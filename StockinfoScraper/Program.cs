@@ -1,13 +1,6 @@
-﻿using Newtonsoft.Json;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Internal;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SeleniumDocs.Hello
 {
@@ -15,19 +8,19 @@ namespace SeleniumDocs.Hello
     {
         public static void Main()
         {
-            Console.WriteLine("Enter stock name or ticker below!");
-            string prompt = Console.ReadLine();
+            Console.WriteLine("Enter stock name or ticker below!"); //request user input via console
+            string prompt = Console.ReadLine(); //read user input from console
 
-            var driver = new ChromeDriver();
-            driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl("https://www.google.com/finance/");
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
-            AllowCookies(driver);
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
-            searchStock(driver, prompt);
+            var driver = new ChromeDriver(); //initialize chrome driver
+            driver.Manage().Window.Maximize(); //maximize window
+            driver.Navigate().GoToUrl("https://www.google.com/finance/"); //navigate to url
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30); //wait until loaded
+            AllowCookies(driver); //accept cookies
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30); //wait until loaded
+            searchStock(driver, prompt); //search stock that user asked for
 
-            List<string> stockData = StockInfo(driver);
-            Console.WriteLine("------- $$$ ------- \n");
+            List<string> stockData = StockInfo(driver); //save gathered data to local variable
+            Console.WriteLine("------- $$$ ------- \n"); 
             Console.WriteLine("Name: " + stockData[0]);
             Console.WriteLine("Primary market: " + stockData[1]);
             Console.WriteLine("Current price: " + stockData[2]);
@@ -58,11 +51,12 @@ namespace SeleniumDocs.Hello
             var data = string.Format("{0},{1},{2},{3},{4}", stockData[0], stockData[1], stockData[2], stockData[3], driver.Url);
             csv.AppendLine(data);
             var filePath = "C:/Users/Hube/Desktop/Hube/Thomas More/BAC2/DevOps/case_study_devops/stockinfo.csv";
-            File.WriteAllText(filePath, csv.ToString());
+            File.WriteAllText(filePath, csv.ToString()); 
 
-            driver.Close();
+            driver.Close(); //close driver
         }
 
+        //json object
         class ToJson
         {
             public string name;
@@ -72,6 +66,7 @@ namespace SeleniumDocs.Hello
             public string moreInfo;
         }
 
+        //accept cookies when window pops up
         private static void AllowCookies(ChromeDriver driver)
         {
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
@@ -79,6 +74,7 @@ namespace SeleniumDocs.Hello
             buttonAccept.Click();
         }
 
+        //enter the user input into searchbar on Google Finance site
         private static void searchStock(ChromeDriver driver, string search)
         {
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
@@ -87,6 +83,7 @@ namespace SeleniumDocs.Hello
             searchbar.SendKeys(Keys.Enter);
         }
 
+        //Get all data from specific stock
         public static List<string> StockInfo(ChromeDriver driver)
         {
             List<string> list = new List<string>();

@@ -9,27 +9,28 @@ namespace SeleniumDocs.Hello
         public static void Main()
         {
             Console.WriteLine("Enter the job function you want to search for (press enter for random selection)");
-            string prompt = Console.ReadLine();
+            string prompt = Console.ReadLine(); //read user input from console
 
-            var driver = new ChromeDriver();
-            driver.Manage().Window.Maximize();
-            string searchurl = "https://www.ictjob.be/nl/it-vacatures-zoeken?keywords=" + prompt;
-            driver.Navigate().GoToUrl(searchurl);
-            SortByDate(driver);
+            var driver = new ChromeDriver(); //initialize chrome driver
+            driver.Manage().Window.Maximize(); //maximize window
+            string searchurl = "https://www.ictjob.be/nl/it-vacatures-zoeken?keywords=" + prompt; //construct url
+            driver.Navigate().GoToUrl(searchurl); //navigate to url
+            SortByDate(driver); //sort results by recentness
 
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30); //wait untill loaded
 
+            //save gathered data to local variables
             List<string> jsTitles = Titles(driver);
             List<string> jsCompanies = Companies(driver);
             List<string> jsLocations = Locations(driver);
             List<string> jsKeywords = Keywords(driver);
             List<string> jsDetailPages = DetailPages(driver);
 
-            List<ToJson> toJsons = new List<ToJson>();
-            var csv = new StringBuilder();
+            List<ToJson> toJsons = new List<ToJson>(); //list for json object
+            var csv = new StringBuilder(); //initialize csv
 
             Console.WriteLine("------- Here are the 5 most recent job ads for your search: " + prompt + " ------- \n");
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++) //for top 5 recent job ads
             {
                 //write to console
                 Console.WriteLine("Job description: " + jsTitles[i]);
@@ -48,10 +49,10 @@ namespace SeleniumDocs.Hello
                     keywords = jsKeywords[i],
                     moreinfo = jsDetailPages[i],
                 };
-                toJsons.Add(a);
+                toJsons.Add(a); //add json object to list
 
                 var data = string.Format("{0},{1},{2},{3},{4}", jsTitles[i], jsCompanies[i], jsLocations[i], jsKeywords[i], jsDetailPages[i]);
-                csv.AppendLine(data);
+                csv.AppendLine(data); //add data to csv
             }
 
             // save json objects in .txt file
@@ -73,6 +74,7 @@ namespace SeleniumDocs.Hello
             driver.Close();
         }
 
+        //json object
         class ToJson
         {
             public string jobdescription;
@@ -82,6 +84,7 @@ namespace SeleniumDocs.Hello
             public string moreinfo;
         }
 
+        //sort job ads by date
         private static void SortByDate(ChromeDriver driver)
         {
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
@@ -89,6 +92,7 @@ namespace SeleniumDocs.Hello
             buttonDate.Click();
         }
 
+        //get title of job ad
         private static List<string> Titles(ChromeDriver driver)
         {
             List<string> list = new List<string>();
@@ -101,6 +105,7 @@ namespace SeleniumDocs.Hello
             return list;
         }
 
+        //get company who posted job ad
         private static List<string> Companies(ChromeDriver driver)
         {
             List<string> list = new List<string>();
@@ -113,6 +118,7 @@ namespace SeleniumDocs.Hello
             return list;
         }
 
+        //get job location
         private static List<string> Locations(ChromeDriver driver)
         {
             List<string> list = new List<string>();
@@ -125,6 +131,7 @@ namespace SeleniumDocs.Hello
             return list;
         }
 
+        //get keywords linked to job
         private static List<string> Keywords(ChromeDriver driver)
         {
             List<string> list = new List<string>();
@@ -137,6 +144,7 @@ namespace SeleniumDocs.Hello
             return list;
         }
 
+        //get link to the detail page of the job ad
         private static List<string> DetailPages(ChromeDriver driver)
         {
             List<string> list = new List<string>();
