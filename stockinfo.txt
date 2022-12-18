@@ -1,0 +1,1 @@
+{"name":"Tesla, Inc.","primaryMarket":"NASDAQ","currentPrice":"$ 150,23","dollarChange":"-7,44 Vandaag","moreInfo":"https://www.google.com/finance/quote/TSLA:NASDAQ"}
